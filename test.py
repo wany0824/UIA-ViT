@@ -29,7 +29,7 @@ parser.add_argument('--batchsize', type=int, default=128, help='input batch size
 parser.add_argument('--framenum', type=int, default=110)
 parser.add_argument('--imageSize', type=int, default=224, help='the height / width of the input image to network')
 parser.add_argument('--patch', type=int, default=16)
-parser.add_argument('--outf', default='/home/wany/project/xception-FF/FFall/ckpt1_lr0.00002_all/', help='folder to output log and load model checkpoints')
+parser.add_argument('--outf', default='', help='folder to output log and load model checkpoints')
 parser.add_argument('--testmodel', default="model_bestacc.pt")
 parser.add_argument('--record_error', default=True)
 parser.add_argument('--attn_blk', type=str, default='8 9 10 11 12')
