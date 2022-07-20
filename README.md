@@ -1,4 +1,4 @@
-# UIA-ViT
+# UIA-ViT: Unsupervised Inconsistency-Aware Method based on Vision Transformer for Face Forgery Detection
 
 ### Environment
 
