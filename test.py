@@ -48,7 +48,7 @@ class TestSet(Dataset):
         random.seed(8664)
         self.facepath = face_path
         self.frames = test_frames
-        self.transform_xcp = transforms.Compose([
+        self.transform = transforms.Compose([
             transforms.Resize((opt.imageSize, opt.imageSize)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5]*3, std=[0.5]*3)])
@@ -76,11 +76,7 @@ class TestSet(Dataset):
     def __getitem__(self,idx):
         img_name = self.imgs[idx]
         image = self._load_image(img_name)
-        if 'c40' in img_name:
-            H,W = image.size
-            centercrop = transforms.CenterCrop((int(H/1.3), int(W/1.3)))
-            image = centercrop(image)
-        image = self.transform_xcp(image)
+        image = self.transform(image)
         return image
 
 def get_datalist_stand(datapath):
