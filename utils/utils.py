@@ -15,7 +15,26 @@ from sklearn.covariance import LedoitWolf
 from network.vit_16_base_feat_middle_gal_v2 import vit_base_patch16_224
 import pdb
 
-        
+
+def time_to_str(t, mode='min'):
+    if mode=='min':
+        t  = int(t)/60
+        hr = t//60
+        min = t%60
+        return '%2d hr %02d min'%(hr,min)
+    elif mode=='sec':
+        t   = int(t)
+        min = t//60
+        sec = t%60
+        return '%2d min %02d sec'%(min,sec)
+    else:
+        raise NotImplementedError
+
+def calculate_threshold(probs, labels, threshold):
+    TN, FN, FP, TP = eval_state(probs, labels, threshold)
+    ACC = (TP + TN) / labels.shape[0]
+    return ACC
+		
 def fit_inv_covariance(samples):
     return torch.Tensor(LedoitWolf().fit(samples.cpu()).precision_).to(
         samples.device
