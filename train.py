@@ -48,15 +48,15 @@ class Logger(object):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', default='vit')
-parser.add_argument('--dataset', default ="/mnt/lvdisk1/wany/data/FaceForensics++/manipulated_sequences/src/c40/filted_idct_v1/", help='path to root dataset')
-parser.add_argument('--originroot', default ="/mnt/lvdisk1/wany/data/FaceForensics++/original_sequences/youtube/c40/filted_idct_v1/", help='path to root original')
-parser.add_argument('--train_set', default ='/home/wany/project/xception/dataset/train_stand.json', help='train set')
-parser.add_argument('--val_set', default ='/home/wany/project/xception/dataset/valid_stand.json', help='validation set')
-parser.add_argument('--test_set', default ='/home/wany/project/xception/dataset/test_stand.json', help='test set')
+parser.add_argument('--dataset', default ="/data/FaceForensics++/manipulated_sequences/src/c23/faces/", help='path to root dataset')
+parser.add_argument('--originroot', default ="/data/FaceForensics++/original_sequences/youtube/c23/faces/", help='path to root original')
+parser.add_argument('--train_set', default ="./dataset/train_stand.json', help='train set')
+parser.add_argument('--val_set', default ='./dataset/valid_stand.json', help='validation set')
+parser.add_argument('--test_set', default ='./dataset/test_stand.json', help='test set')
 parser.add_argument('--src', default="Deepfakes Face2Face FaceSwap NeuralTextures")
 parser.add_argument('--test_src', default='Deepfakes Face2Face FaceSwap NeuralTextures')
 parser.add_argument('--workers', type=int, help='number of data loading workers', default=4)
-parser.add_argument('--batchSize', type=int, default=64, help='input batch size')
+parser.add_argument('--batchSize', type=int, default=96, help='input batch size')
 parser.add_argument('--batchSize_val', type=int, default=128, help='input batch size')
 parser.add_argument('--imageSize', type=int, default=224, help='the height / width of the input image to network')
 parser.add_argument('--framenum', default=20)
@@ -68,13 +68,12 @@ parser.add_argument('--lr', type=float, default=3e-5, help='learning rate')
 parser.add_argument('--gamma', type=float, default=0.7)
 parser.add_argument('--beta1', type=float, default=0.9, help='beta1 for adam')
 parser.add_argument('--eps', type=float, default=1e-08, help='epsilon')
-parser.add_argument('--outf', default='/home/wany/project/xception/FFall/ckpt1/', help='folder to output images and model checkpoints')
-parser.add_argument('--log_root', default='/home/wany/project/xception/logs/', help='folder to record logs')
-parser.add_argument('--manualSeed', type=int, help='manual seed')
+parser.add_argument('--outf', default='./ckpt/', help='folder to output images and model checkpoints')
+parser.add_argument('--log_root', default='./logs/', help='folder to record logs')
+parser.add_argument('--manualSeed', type=int, help='manual seed', default=666)
 parser.add_argument('--lambda_corr', type=float, default=0.06)
 parser.add_argument('--lambda_c_param', default='0.5 0.05 0.05', help='lambda for c_cross, c_in, c_out')
 parser.add_argument('--c_initilize', default='0.2 0.6 0.6')
-parser.add_argument('--l1maha_weight', type=float, default=0.01)
 parser.add_argument('--min_threshold_H', default='3 11')
 parser.add_argument('--min_threshold', default='3 11', help="min_threshold_W")
 parser.add_argument('--patch', type=int, default=16)
@@ -82,7 +81,6 @@ parser.add_argument('--attn_blk', type=str, default='8 9 10 11 12')
 parser.add_argument('--feat_blk', type=int, default=6)
 parser.add_argument('--k_weight', type=float, default=12.0)
 parser.add_argument('--k_thr', type=float, default=0.7)
-parser.add_argument('--is_progressive', type=int, default=1)
 opt = parser.parse_args()
 
 if opt.feat_blk :
@@ -101,9 +99,8 @@ if __name__ == "__main__":
         opt.manualSeed = random.randint(1, 10000)
     random_seed(opt.manualSeed)
     os.makedirs(opt.outf, exist_ok=True)
-    
+					
 	model = vit_base_patch16_224(pretrained=True, num_classes=2)  
-	
     network_loss = nn.CrossEntropyLoss()
     [c_cross, c_in, c_out] = [nn.Parameter(torch.tensor(float(i)).cuda()) for i in opt.c_initilize.split()]     
     min_threshold_H = [int(i) for i in opt.min_threshold_H.split()]
@@ -128,8 +125,7 @@ if __name__ == "__main__":
     else:
         optimizer_dict = [{"params": model.parameters(), 'lr': opt.lr},
                         {"params": [c_in, c_out, c_cross], 'lr': opt.lr},]
-                    #   {"params": c_out, 'lr': opt.lr},
-                    #   {"params": c_cross, 'lr': opt.lr},]
+
     if opt.optim == 'Adam':
         optimizer = Adam(optimizer_dict, lr=opt.lr, betas=(opt.beta1, 0.999), eps=opt.eps)
     elif opt.optim == 'SGD':
@@ -241,7 +237,6 @@ if __name__ == "__main__":
             loss_inter_frame = attention_loss(attn_map_real, attn_map_fake, index_map[fakeindex,:])
             lambda_c = [float(p) for p in opt.lambda_c_param.split()]
             loss_dis_tatol = loss_dis + opt.lambda_corr * loss_inter_frame + lambda_c[0]*torch.abs(c_cross) + lambda_c[1]/torch.abs(c_in) + lambda_c[2]/torch.abs(c_out)
-            loss_writer.add_scalar('Corr_loss', loss_inter_frame.item(), iter_num)
         else:
             loss_dis = network_loss(classes, labels_data.data) 
             loss_dis_tatol = loss_dis
@@ -272,8 +267,6 @@ if __name__ == "__main__":
             count_val = 0
             with torch.no_grad():
                 for img_data, labels_data in dataloader_val:
-
-                    labels_data[labels_data > 1] = 1
                     img_label = labels_data.numpy().astype(np.float)
                     img_data = img_data.cuda()
                     labels_data = labels_data.cuda()
