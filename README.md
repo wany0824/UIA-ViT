@@ -1,25 +1,31 @@
-# UIA-ViT: Unsupervised Inconsistency-Aware Method based on Vision Transformer for Face Forgery Detection
+## Introduction
 
-### Environment
+This is our new work about Face Forgery Detection, which has been accepted by ECCV 2022 (oral). 
+
+**UIA-ViT: Unsupervised Inconsistency-Aware Method based on Vision Transformer for Face Forgery Detection**
+
+paper link: https://arxiv.org/abs/2210.12752
+
+## Environment
 
 pytorch==1.6.0
 torchvision==0.5.0
 cudatoolkit==10.1
 timm==0.4.12
 
-### Test
+## Test
 
-Test code: test.py
+Test code: ``test.py``
 
-### Train
+## Train
 
-Train code: train.py
+Train code: ``train.py``
 
 Our trained model has been released: https://drive.google.com/drive/folders/1zPx4TLEfLnJDZYpSV0LhFvrMEEDzroB0?usp=sharing
 
-Some main code about our proposed UPCL is in utils/utils.py.
+Some main code about our proposed UPCL is in ``utils/utils.py``.
 
-### Citations
+## Citations
 Please cite the following paper in your publications if you use the python implementations:
 
 ```
