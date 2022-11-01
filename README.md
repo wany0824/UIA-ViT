@@ -4,6 +4,8 @@ This is our new work about Face Forgery Detection, which has been accepted by EC
 
 **UIA-ViT: Unsupervised Inconsistency-Aware Method based on Vision Transformer for Face Forgery Detection**
 
+![](framework.png)
+
 paper link: https://arxiv.org/abs/2210.12752
 
 ## Environment
