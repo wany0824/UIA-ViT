@@ -30,6 +30,14 @@ def time_to_str(t, mode='min'):
     else:
         raise NotImplementedError
 
+def eval_state(probs, labels, thr):
+    predict = probs >= thr
+    TN = np.sum((labels == 0) & (predict == False))
+    FN = np.sum((labels == 1) & (predict == False))
+    FP = np.sum((labels == 0) & (predict == True))
+    TP = np.sum((labels == 1) & (predict == True))
+    return TN, FN, FP, TP
+
 def calculate_threshold(probs, labels, threshold):
     TN, FN, FP, TP = eval_state(probs, labels, threshold)
     ACC = (TP + TN) / labels.shape[0]
