@@ -298,7 +298,7 @@ class VisionTransformer(nn.Module):
                 localization_map = (w * torch.ones(B,1,PP).to(x_patch.device) + (1-w) * localization_map.reshape(B,1,PP).to(x_patch.device))/PP
         else:
             localization_map = localization_map.reshape(B,1,PP).to(x_patch.device)/PP
-        x = torch.cat([x_cls, torch.bmm(localization_map, x_patch).squeeze()], -1) 
+        x = torch.cat([x_cls, torch.bmm(localization_map, x_patch).squeeze(1)], -1) 
         x = self.head(x)
         return x, feat_block, attn_block
 
