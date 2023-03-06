@@ -6,7 +6,10 @@ This is our new work about Face Forgery Detection, which has been accepted by EC
 
 ![](framework.png)
 
-paper link: https://arxiv.org/abs/2210.12752
+paper link: https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136650384.pdf
+
+https://arxiv.org/abs/2210.12752
+
 
 ## Environment
 
