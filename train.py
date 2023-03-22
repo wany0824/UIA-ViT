@@ -91,7 +91,7 @@ if len(opt.attn_blk) == 1:
 patch_num = int(opt.imageSize / opt.patch)
 
 if __name__ == "__main__":
-	os.makedirs(opt.outf, exist_ok=True)
+    os.makedirs(opt.outf, exist_ok=True)
     log = Logger(filename=os.path.join(opt.outf, 'train.log'))
     log.write(str(opt)+'\n')
     
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     random_seed(opt.manualSeed)
     os.makedirs(opt.outf, exist_ok=True)
 					
-	model = vit_base_patch16_224(pretrained=True, num_classes=2)  
+    model = vit_base_patch16_224(pretrained=True, num_classes=2)  
     network_loss = nn.CrossEntropyLoss()
     [c_cross, c_in, c_out] = [nn.Parameter(torch.tensor(float(i)).cuda()) for i in opt.c_initilize.split()]     
     min_threshold_H = [int(i) for i in opt.min_threshold_H.split()]
