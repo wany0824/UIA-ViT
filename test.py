@@ -7,15 +7,15 @@ from PIL import Image
 import torch
 import numpy as np
 import torch.utils.data
-from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
+from torch.utils.data import DataLoader
 from torch.nn import functional as F
 from torchvision import transforms
 from tqdm import tqdm
 import glob
 import argparse
-from sklearn.metrics import roc_auc_score
 from network.vit_16_base_feat_middle_gal_v2 import vit_base_patch16_224
+from sklearn.metrics import roc_auc_score
 import json
 
 parser = argparse.ArgumentParser()
@@ -170,6 +170,9 @@ def test(model, testroot, origin, testlist, test_frame, batchsize, record_error)
         error_vid_file.close()
     return top1_acc_frame, auc_frame, top1_acc, auc
 
+def compute_accuracy(target, output):
+    pred = output > 0.5
+    return np.sum(pred==target)/target.shape[0]
 
 def test_video(testloder, model):
     model.eval()
@@ -183,9 +186,7 @@ def test_video(testloder, model):
 
     return preds 
 
-def compute_accuracy(target, output):
-    pred = output > 0.5
-    return np.sum(pred==target)/target.shape[0]
+
 
 if __name__ == '__main__':
 
